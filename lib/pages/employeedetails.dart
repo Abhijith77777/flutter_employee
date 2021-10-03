@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:employeedirectory/themes/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 
 class EmployeeDetails extends StatefulWidget {
@@ -43,15 +42,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
           color: Colors.black,
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              // do something
-            },
-          )
+          SizedBox(width: 50)
         ],
       ),
       
@@ -68,26 +59,39 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                 children: [
                   SizedBox(height: screenHeight * 0.03),
                   Center(
-                    child: Container(
-                      height: screenHeight * 0.15,
-                      width: screenHeight *0.15,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(screenHeight * 0.1)
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(screenHeight * 0.015),
-                        child: Image(
-                          image: NetworkImage(employee['profile_image'])
-                        ),
-                      )
+                    child: Padding(
+                      padding: EdgeInsets.all(screenHeight * 0.015),
+                      child: employee['profile_image'] == null ?
+                  Container(
+                    height: screenHeight * 0.15,
+                    width: screenHeight * 0.15,
+                    child: ClipRRect(
+                    borderRadius: BorderRadius.circular(screenHeight * 0.1),
+                    child: Image.asset(
+                      'assets/images/image.png'
+                    ),
+                    ),
+                  ) : 
+                  Container(
+                    height: screenHeight * 0.15,
+                    width: screenHeight * 0.15,
+                    child: ClipRRect(
+                    borderRadius: BorderRadius.circular(screenHeight * 0.1),
+                    child: Image.network(
+                      employee['profile_image']
+                    ),
+                    ),
+                  ),
+                      // child: Image(
+                      //   image: NetworkImage(employee['profile_image'])
+                      // ),
                     )
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Center(
                     child: Text(
                       employee['name'] ?? "Not available",
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: secondaryColor,
                         fontSize: 22,
                         fontWeight: FontWeight.bold
@@ -98,8 +102,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.2),
                     child: Text(
-                      employee['company']['name'] ?? "Not AVailable",
-                      style: TextStyle(
+                      employee['company'] == null ? "Not AVailable" : employee['company']['name'],
+                      style: const TextStyle(
                         color: blackColor,
                         fontSize: 16,
                       ),
@@ -287,21 +291,21 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                   Column(
                                     children: [
                                       Text(
-                                        employee['company']['name'] ?? "Not available",
+                                        employee['company'] == null || employee['company']['name'] == null ? "Not available" : employee['company']['name'],
                                         style: TextStyle(
                                           color: blackColor,
                                           fontSize: 16,
                                         ),
                                       ),
                                       Text(
-                                        employee['company']['catchPhrase'] ?? "Not available",
+                                        employee['company'] == null || employee['company']['catchPhrase'] == null ? "Not available" : employee['company']['catchPhrase'],
                                         style: TextStyle(
                                           color: blackColor,
                                           fontSize: 16,
                                         ),
                                       ),
                                       Text(
-                                        employee['company']['bs'] ?? "Not available",
+                                        employee['company'] == null || employee['company']['bs'] == null ? "Not available" : employee['company']['bs'],
                                         style: TextStyle(
                                           color: blackColor,
                                           fontSize: 16,
