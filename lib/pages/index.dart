@@ -96,7 +96,7 @@ class _IndexState extends State<Index> {
           children: [
             InkWell(
               onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EmployeeDetails()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EmployeeDetails(employee: employee[index])));
               },
               child: Card(
                 child: ListTile(

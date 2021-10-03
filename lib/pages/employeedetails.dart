@@ -1,19 +1,30 @@
 // ignore_for_file: dead_code
 
+import 'dart:convert';
+
 import 'package:employeedirectory/themes/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class EmployeeDetails extends StatefulWidget {
-  const EmployeeDetails({ Key? key }) : super(key: key);
+  Map employee;
+  EmployeeDetails({required this.employee});
+
+  
 
   @override
-  _EmployeeDetailsState createState() => _EmployeeDetailsState();
+  _EmployeeDetailsState createState() => _EmployeeDetailsState(employee: employee);
 }
 
 class _EmployeeDetailsState extends State<EmployeeDetails> {
+  Map employee; 
+  _EmployeeDetailsState({required this.employee});
+
   @override
   Widget build(BuildContext context) {
+
+    print(employee);
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -23,7 +34,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
         elevation: 0.0,
         backgroundColor: appBarColor,
         automaticallyImplyLeading: false,
-        title: Center(child: Text('Repository Details')),
+        title: Center(child: Text('Employee Details')),
         leading: IconButton(
           onPressed: (){
             Navigator.of(context).pop();
@@ -67,7 +78,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                       child: Padding(
                         padding: EdgeInsets.all(screenHeight * 0.015),
                         child: Image(
-                          image: AssetImage("assets/images/image.png")
+                          image: NetworkImage(employee['profile_image'])
                         ),
                       )
                     )
@@ -75,8 +86,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                   SizedBox(height: screenHeight * 0.01),
                   Center(
                     child: Text(
-                      // name ?? "Not available",
-                      "Name",
+                      employee['name'] ?? "Not available",
                       style: TextStyle(
                         color: secondaryColor,
                         fontSize: 22,
@@ -88,7 +98,11 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.2),
                     child: Text(
-                      "Company Name"
+                      employee['company']['name'] ?? "Not AVailable",
+                      style: TextStyle(
+                        color: blackColor,
+                        fontSize: 16,
+                      ),
                     )
                   ),
                   
@@ -123,7 +137,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Name : ",
+                                    "User Name : ",
                                     style: TextStyle(
                                       color: blackColor,
                                       fontSize: 16,
@@ -131,8 +145,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                     ),
                                   ),
                                   Text(
-                                    // fullName ?? "Not available",
-                                    "FullName",
+                                    employee['username'] ?? "Not available",
                                     style: TextStyle(
                                       color: blackColor,
                                       fontSize: 16,
@@ -146,7 +159,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Description : ",
+                                    "Email : ",
                                     style: TextStyle(
                                       color: blackColor,
                                       fontSize: 16,
@@ -156,8 +169,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                   Container(
                                     width: screenWidth * 0.8,
                                     child: Text(
-                                      // details ?? "Not available",
-                                      "Details",
+                                      employee['email'] ?? "Not available",
                                       style: TextStyle(
                                         color: blackColor,
                                         fontSize: 16,
@@ -172,7 +184,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "URL : ",
+                                    "Phone : ",
                                     style: TextStyle(
                                       color: blackColor,
                                       fontSize: 16,
@@ -182,8 +194,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                   Container(
                                     width: screenWidth * 0.7,
                                     child: Text(
-                                      // url ?? "Not available",
-                                      "URLsfs",
+                                      employee['phone'] ?? "Not available",
                                       style: TextStyle(
                                         color: blackColor,
                                         fontSize: 16,
@@ -198,7 +209,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Language : ",
+                                    "Website : ",
                                     style: TextStyle(
                                       color: blackColor,
                                       fontSize: 16,
@@ -206,12 +217,97 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                                     ),
                                   ),
                                   Text(
-                                    // language ?? "Not available",
-                                    "Language",
+                                    employee['website'] ?? "Not available",
                                     style: TextStyle(
                                       color: blackColor,
                                       fontSize: 16,
                                     ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: screenHeight * 0.02),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Address : ",
+                                    style: TextStyle(
+                                      color: blackColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        employee['address']['street'] ?? "Not available",
+                                        style: TextStyle(
+                                          color: blackColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Text(
+                                        employee['address']['suite'] ?? "Not available",
+                                        style: TextStyle(
+                                          color: blackColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Text(
+                                        employee['address']['city'] ?? "Not available",
+                                        style: TextStyle(
+                                          color: blackColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),Text(
+                                        employee['address']['zipcode'] ?? "Not available",
+                                        style: TextStyle(
+                                          color: blackColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: screenHeight * 0.02),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Company : ",
+                                    style: TextStyle(
+                                      color: blackColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        employee['company']['name'] ?? "Not available",
+                                        style: TextStyle(
+                                          color: blackColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Text(
+                                        employee['company']['catchPhrase'] ?? "Not available",
+                                        style: TextStyle(
+                                          color: blackColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Text(
+                                        employee['company']['bs'] ?? "Not available",
+                                        style: TextStyle(
+                                          color: blackColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
